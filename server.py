@@ -12,7 +12,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
-        self.wfile.write(f"Your IP address is: {ip_address}".encode())
+        self.wfile.write(f"My IP address is: {ip_address}".encode())
 
 # Run the server on port 3000
 def run(server_class=HTTPServer, handler_class=MyHandler, port=3000):
