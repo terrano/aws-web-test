@@ -40,15 +40,15 @@ jobs:
     
     - name: Get AWS login and pass
       run: |
-        aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 211125418581.dkr.ecr.eu-central-1.amazonaws.com
+        aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com
     
     - name: Build image for AWS
       run: |
-        docker build -f Dockerfile -t web_ip:${{ github.sha }} .
+        docker build web_ip .
     
     - name: Set docker tag
       run: |
-        docker tag web_ip:${{ github.sha }} ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/${{ vars.AWS_REPOSITORY_NAME }}/web_ip:latest
+        docker tag web_ip ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/${{ vars.AWS_REPOSITORY_NAME }}/web_ip:latest
     
     - name: Push docker image to AWS ECR
       run: | 
