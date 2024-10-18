@@ -27,7 +27,7 @@ jobs:
 
     - name: Build and push Docker image to DockerHub 
       run: |
-        docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/web_ip:${{ github.sha }} .
+        docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/web_ip:${{ github.sha }yy} .
         docker push ${{ secrets.DOCKER_USERNAME }}/web_ip:${{ github.sha }}
 
     
@@ -40,15 +40,15 @@ jobs:
     
     - name: Get AWS login and pass
       run: |
-        aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${ vars.AWS_REGISTRY_ID }.dkr.ecr.eu-central-1.amazonaws.com
+        aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com
     
     - name: Build image for AWS
       run: |
-        docker build web_ip .
+        docker build -f Dockerfile -t ${{ vars.AWS_REPOSITORY_NAME }}/web_ip:${{ github.sha }} .
     
     - name: Set docker tag
       run: |
-        docker tag web_ip ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/${{ vars.AWS_REPOSITORY_NAME }}/web_ip:latest
+        docker tag ${{ vars.AWS_REPOSITORY_NAME }}/web_ip:${{ github.sha }} ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/${{ vars.AWS_REPOSITORY_NAME }}/web_ip:latest
     
     - name: Push docker image to AWS ECR
       run: | 
