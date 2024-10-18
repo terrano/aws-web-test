@@ -40,7 +40,7 @@ jobs:
     
     - name: Get AWS login and pass
       run: |
-        aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com
+        aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${ vars.AWS_REGISTRY_ID }.dkr.ecr.eu-central-1.amazonaws.com
     
     - name: Build image for AWS
       run: |
