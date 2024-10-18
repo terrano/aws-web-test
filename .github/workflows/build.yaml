@@ -10,7 +10,7 @@ on:
 
 jobs:
 
-  build_and_push:
+ build_and_push:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
@@ -25,7 +25,33 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push Docker image
+    - name: Build and push Docker image to DockerHub 
       run: |
-        docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/web_ip_python:${{ github.sha }} .
-        docker push ${{ secrets.DOCKER_USERNAME }}/web_ip_python:${{ github.sha }}
+        docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/web_ip:${{ github.sha }} .
+        docker push ${{ secrets.DOCKER_USERNAME }}/web_ip:${{ github.sha }}
+
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+        aws-region: eu-central-1
+    - name: Get AWS login and pass
+      run: |
+        aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 211125418581.dkr.ecr.eu-central-1.amazonaws.com
+    - name: Set docker tag
+      run: |
+        docker tag test/web_ip:latest 211125418581.dkr.ecr.eu-central-1.amazonaws.com/test/web_ip:latest
+    - name: Push docker image to AWS ECR
+      run: | 
+        docker push ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/${{ vars.AWS_REPOSITORY_NAME }}:${{ github.run_id }}
+
+  deploy:
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    steps:
+    - name: Pull and run Docker image
+      run: |
+        docker pull ${{ secrets.DOCKER_USERNAME }}/web_ip:${{ github.sha }}
+        docker run -d -p 80:3000 ${{ secrets.DOCKER_USERNAME }}/web_ip:${{ github.sha }}
