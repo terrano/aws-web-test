@@ -44,8 +44,8 @@ jobs:
     
     - name: Build image for AWS
       run: |
-        docker build -f Dockerfile -t ${{ vars.AWS_REPOSITORY_NAME }}/web_ip:${{ github.sha }} .
         echo ${{ vars.AWS_REPOSITORY_NAME }}
+        docker build -f Dockerfile -t ${{ vars.AWS_REPOSITORY_NAME }}/web_ip:${{ github.sha }} .
     
     - name: Set docker tag
       run: |
