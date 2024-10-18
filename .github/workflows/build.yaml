@@ -31,7 +31,7 @@ jobs:
         
     - name: Tag Image for Docker
       run: |
-        docker tag common_image:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/${{ vars.IMAGE_NAME }}:${{ github.sha }} .
+        docker tag common_image:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/${{ vars.IMAGE_NAME }}:${{ github.sha }}
         
     - name: Push to Docker Hub    
       run: |  
