@@ -27,7 +27,11 @@ jobs:
 
     - name: Build Image
       run: |
-        docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/${{ vars.IMAGE_NAME }}:${{ github.sha }} .
+        docker build -f Dockerfile -t common_image:${{ github.sha }} .
+        
+    - name: Tag Image for Docker
+      run: |
+        docker tag common_image:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/${{ vars.IMAGE_NAME }}:${{ github.sha }} .
         
     - name: Push to Docker Hub    
       run: |  
@@ -45,15 +49,11 @@ jobs:
       run: |
         aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com
     
-    - name: Build image for AWS
+    - name: Tag image for AWS
       run: |
-        docker build -f Dockerfile -t ${{ vars.IMAGE_NAME }}:${{ github.sha }} .
+        docker tag common_image:${{ github.sha }} ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/${{ vars.AWS_REPOSITORY_NAME }}:latest
     
-    - name: Set docker tag
-      run: |
-        docker tag ${{ vars.IMAGE_NAME }}:${{ github.sha }} ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/${{ vars.AWS_REPOSITORY_NAME }}:latest
-    
-    - name: Push docker image to AWS ECR
+    - name: Push to AWS ECR
       run: |
         docker push ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/${{ vars.AWS_REPOSITORY_NAME }}:latest
 
