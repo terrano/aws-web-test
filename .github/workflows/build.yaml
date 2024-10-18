@@ -18,7 +18,7 @@ jobs:
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
-
+    
     - name: Log in to DockerHub
       uses: docker/login-action@v2
       with:
@@ -30,19 +30,26 @@ jobs:
         docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/web_ip:${{ github.sha }} .
         docker push ${{ secrets.DOCKER_USERNAME }}/web_ip:${{ github.sha }}
 
-
+    
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
         aws-region: eu-central-1
+    
     - name: Get AWS login and pass
       run: |
         aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 211125418581.dkr.ecr.eu-central-1.amazonaws.com
+    
+    - name: Build image for AWS
+      run: |
+        docker build -f Dockerfile -t ${{ vars.AWS_REPOSITORY_NAME }}/web_ip:${{ github.sha }} .
+    
     - name: Set docker tag
       run: |
-        docker tag test/web_ip:latest 211125418581.dkr.ecr.eu-central-1.amazonaws.com/test/web_ip:latest
+        docker tag ${{ vars.AWS_REPOSITORY_NAME }}/web_ip:${{ github.sha }} ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/test/web_ip:latest
+    
     - name: Push docker image to AWS ECR
       run: | 
         docker push ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/${{ vars.AWS_REPOSITORY_NAME }}:${{ github.run_id }}
