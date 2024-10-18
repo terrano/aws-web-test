@@ -44,17 +44,17 @@ jobs:
     
     - name: Build image for AWS
       run: |
-        #docker build -t web_ip .
         docker build -f Dockerfile -t ${{ vars.AWS_REPOSITORY_NAME }}/web_ip:${{ github.sha }} .
     
     - name: Set docker tag
       run: |
-        docker tag ${{ vars.AWS_REPOSITORY_NAME }}/web_ip:${{ github.sha }} ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/web_ip:latest
-        #docker tag ${{ vars.AWS_REPOSITORY_NAME }}/web_ip:${{ github.sha }} ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/${{ vars.AWS_REPOSITORY_NAME }}/web_ip:latest
+        #docker tag ${{ vars.AWS_REPOSITORY_NAME }}/web_ip:${{ github.sha }} ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/web_ip:latest
+        docker tag ${{ vars.AWS_REPOSITORY_NAME }}/web_ip:${{ github.sha }} ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/${{ vars.AWS_REPOSITORY_NAME }}:latest
     
     - name: Push docker image to AWS ECR
       run: |
-        docker push 211125418581.dkr.ecr.eu-central-1.amazonaws.com/web_ip:latest
+        docker push ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/${{ vars.AWS_REPOSITORY_NAME }}:latest
+        #docker push 211125418581.dkr.ecr.eu-central-1.amazonaws.com/web_ip:latest
         #docker push ${{ vars.AWS_REGISTRY_ID }}.dkr.ecr.eu-central-1.amazonaws.com/${{ vars.AWS_REPOSITORY_NAME }}:${{ github.run_id }}
 
   deploy:
