@@ -6,5 +6,5 @@ COPY . /app
 
 EXPOSE 80
 
-CMD ["python", "server.py"]
+ENTRYPOINT ["python", "server.py"]
 
