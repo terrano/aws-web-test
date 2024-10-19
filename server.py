@@ -15,7 +15,7 @@ class MyHandler(SimpleHTTPRequestHandler):
         self.wfile.write(f"My IP address is: {ip_address}".encode())
 
 # Run the server on port 3000
-def run(server_class=HTTPServer, handler_class=MyHandler, port=3000):
+def run(server_class=HTTPServer, handler_class=MyHandler, port=80):
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     print(f"Server running on port {port}...")
