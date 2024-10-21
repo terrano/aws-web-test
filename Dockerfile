@@ -4,7 +4,5 @@ WORKDIR /app
 
 COPY . /app
 
-EXPOSE 80
-
 ENTRYPOINT ["python", "server.py"]
 
