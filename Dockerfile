@@ -1,8 +1,7 @@
-FROM python:3.9-alpine
+FROM public.ecr.aws/lambda/python:3.8
 
-WORKDIR /app
+COPY app.py .
 
-COPY . /app
+CMD ["app.lambda_handler"]
 
-ENTRYPOINT ["python", "server.py"]
 
